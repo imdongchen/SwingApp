@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 
+import 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
@@ -29,7 +30,8 @@ import {onAuthStateChanged} from 'firebase/auth';
 import type {User} from 'firebase/auth';
 import {SignInScreen} from './Screens/Auth/SignInScreen';
 import {SignUpScreen} from './Screens/Auth/SignUpScreen';
-import {RootStackParamList} from './types';
+import {AuthStackParamList, RootStackParamList} from './types';
+import {ProfileScreen} from './Screens/Profile';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -61,15 +63,13 @@ function Section({children, title}: SectionProps): JSX.Element {
   );
 }
 
-const Tab = createBottomTabNavigator<RootStackParamList>();
-
 function App() {
   const [user, setUser] = useState<User | null | undefined>(undefined);
 
   useEffect(() => {
     const {auth} = getFirebase();
     const unsubscribe = onAuthStateChanged(auth, _user => {
-      if (_user) {
+      if (_user !== undefined) {
         setUser(_user);
       }
     });
@@ -93,17 +93,28 @@ function App() {
   );
 }
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 function LoggedOutApp() {
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      linking={{
+        prefixes: ['https://swing.app', 'swing://'],
+        config: {
+          screens: {
+            SignIn: {path: 'signin'},
+            SignUp: {path: 'signup'},
+          },
+        },
+      }}>
       <Stack.Navigator>
-        <Stack.Screen name="Sign up" component={SignUpScreen} />
-        <Stack.Screen name="Sign in" component={SignInScreen} />
+        <Stack.Screen name="SignIn" component={SignInScreen} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+const Tab = createBottomTabNavigator<RootStackParamList>();
 
 function LoggedInApp(): JSX.Element {
   return (
@@ -157,7 +168,7 @@ function LoggedInApp(): JSX.Element {
         />
         <Tab.Screen
           name="Profile"
-          component={Intro}
+          component={ProfileScreen}
           options={{
             title: 'Profile',
             tabBarIcon: ({focused}) => (
