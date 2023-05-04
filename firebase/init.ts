@@ -1,4 +1,6 @@
-import {initializeApp} from 'firebase/app';
+import {initializeApp, getApps} from 'firebase/app';
+import {getAuth, connectAuthEmulator} from 'firebase/auth';
+import {getFirestore, connectFirestoreEmulator} from 'firebase/firestore';
 // import {getAnalytics} from 'firebase/analytics';
 
 const firebaseConfig = {
@@ -11,7 +13,29 @@ const firebaseConfig = {
   measurementId: 'G-P753XYGW2B',
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(firebaseApp);
+function initialize() {
+  const firebaseApp = initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  const firestore = getFirestore(firebaseApp);
+  return {firebaseApp, auth, firestore};
+}
 
-export {firebaseApp};
+function connectToEmulators({
+  firebaseApp,
+  auth,
+  firestore,
+}: ReturnType<typeof initialize>) {
+  if (process.env.NODE_ENV === 'development') {
+    connectAuthEmulator(auth, 'http://localhost:9099', {disableWarnings: true});
+    connectFirestoreEmulator(firestore, 'localhost', 8089);
+  }
+  return {firebaseApp, auth, firestore};
+}
+
+export function getFirebase() {
+  const existingApp = getApps()[0];
+  if (existingApp) {
+    return initialize();
+  }
+  return connectToEmulators(initialize());
+}

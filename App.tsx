@@ -13,7 +13,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import {NativeBaseProvider, Box, Icon} from 'native-base';
+import {NativeBaseProvider, Icon} from 'native-base';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import {
   Colors,
@@ -24,8 +24,8 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import {Home} from './Home';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {firebaseApp} from './firebase/init';
-import {getAuth, onAuthStateChanged} from 'firebase/auth';
+import {getFirebase} from './firebase/init';
+import {onAuthStateChanged} from 'firebase/auth';
 import type {User} from 'firebase/auth';
 import {SignInScreen} from './Screens/Auth/SignInScreen';
 import {SignUpScreen} from './Screens/Auth/SignUpScreen';
@@ -67,7 +67,7 @@ function App() {
   const [user, setUser] = useState<User | null | undefined>(undefined);
 
   useEffect(() => {
-    const auth = getAuth(firebaseApp);
+    const {auth} = getFirebase();
     const unsubscribe = onAuthStateChanged(auth, _user => {
       if (_user) {
         setUser(_user);

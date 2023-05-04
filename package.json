@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "concurrently npm:emulators start",
+    "dev": "concurrently npm:emulators npm:start",
     "emulators": "firebase emulators:start --only firestore,auth --import=./local --export-on-exit",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -32,6 +32,7 @@
     "@react-native-community/eslint-config": "^3.2.0",
     "@tsconfig/react-native": "^2.0.2",
     "@types/jest": "^29.2.1",
+    "@types/node": "^18.16.3",
     "@types/react": "^18.0.24",
     "@types/react-native-vector-icons": "^6.4.13",
     "@types/react-test-renderer": "^18.0.0",
