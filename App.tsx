@@ -23,7 +23,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import {Home} from './Home';
+import {HomeScreen} from './Screens/Home';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {getFirebase} from './firebase/init';
 import {onAuthStateChanged} from 'firebase/auth';
@@ -32,6 +32,7 @@ import {SignInScreen} from './Screens/Auth/SignInScreen';
 import {SignUpScreen} from './Screens/Auth/SignUpScreen';
 import {AuthStackParamList, RootStackParamList} from './types';
 import {ProfileScreen} from './Screens/Profile';
+import {CheckInForm} from './Screens/Checkin';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -122,7 +123,7 @@ function LoggedInApp(): JSX.Element {
       <Tab.Navigator>
         <Tab.Screen
           name="Home"
-          component={Home}
+          component={HomeScreen}
           options={{
             title: 'Home',
             tabBarIcon: ({focused}) => (
@@ -145,8 +146,8 @@ function LoggedInApp(): JSX.Element {
         />
         <Tab.Screen
           name="Checkin"
-          component={Intro}
-          options={{title: 'Checkin'}}
+          component={CheckInForm}
+          options={{title: 'Check in'}}
         />
         <Tab.Screen
           name="Inbox"

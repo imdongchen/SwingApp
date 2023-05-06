@@ -89,6 +89,7 @@ const signUp = async ({
     // User signed up successfully
     const user = userCredential.user;
     await updateProfile(user, {displayName: name});
+
     console.log(`User ${user.uid} signed up successfully`);
   } catch (error) {
     console.error(error);
