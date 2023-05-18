@@ -1,19 +1,21 @@
 import React from 'react';
-import {Avatar, Box, Button, Heading, HStack, VStack} from 'native-base';
+import {Box, Button, Heading, HStack, VStack} from 'native-base';
 import {signOut} from 'firebase/auth';
 import {getFirebase} from '../../firebase/init';
+import {ProfileAvatar} from '../../components/ProfileAvatar';
 
 export function ProfileScreen() {
   const {
     auth: {currentUser},
   } = getFirebase();
+  if (!currentUser) {
+    return null;
+  }
   return (
     <Box p={2}>
       <VStack space={3}>
         <HStack alignItems="center" space={3}>
-          <Avatar bg="lightBlue.400" size="md">
-            {getInitials(currentUser?.displayName || '')}
-          </Avatar>
+          <ProfileAvatar {...currentUser} />
           <Heading>{currentUser?.displayName || currentUser?.email}</Heading>
         </HStack>
         <Logout />
@@ -32,11 +34,4 @@ function Logout() {
       Logout
     </Button>
   );
-}
-
-function getInitials(name: string) {
-  return name
-    .split(' ')
-    .map(n => n[0])
-    .join('');
 }

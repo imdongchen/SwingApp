@@ -4,7 +4,7 @@ import {Feed} from './Feed';
 
 export function HomeScreen() {
   return (
-    <Box>
+    <Box p={3}>
       <Feed />
     </Box>
   );

@@ -13,7 +13,7 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import {AuthStackScreenProps} from '../../types';
+import {AuthStackScreenProps} from '../../types/routes';
 
 export function SignInScreen({navigation}: AuthStackScreenProps<'SignIn'>) {
   const [email, setEmail] = useState('');

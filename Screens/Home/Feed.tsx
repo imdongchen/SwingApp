@@ -1,22 +1,75 @@
-import {collectionGroup, limit, onSnapshot, query} from 'firebase/firestore';
-import {Box} from 'native-base';
-import React, {useState} from 'react';
-import {getFirebase} from '../../firebase/init';
+import {Box, HStack, Icon, ScrollView, Text, VStack} from 'native-base';
+import React, {useMemo} from 'react';
+import {ProfileAvatar} from '../../components/ProfileAvatar';
+import {CheckIn, useCheckins} from '../../hooks/useCheckins';
+import {formatDistance, formatRelative} from 'date-fns';
+import IonIcon from 'react-native-vector-icons/Ionicons';
+
+const actions = ['Flied', 'Blasted', 'Crushed'];
 
 export function Feed() {
-  const checkins = useFeed();
-  return <Box>{JSON.stringify(checkins)}</Box>;
+  const checkins = useCheckins();
+  console.log('lala', checkins);
+  return (
+    <ScrollView>
+      {checkins.map(checkin => (
+        <Box mb={4} key={checkin.id}>
+          <FeedItem {...checkin} />
+        </Box>
+      ))}
+    </ScrollView>
+  );
 }
 
-function useFeed() {
-  const [checkins, setCheckins] = useState<any[]>([]);
-  const {firestore} = getFirebase();
-  const checkinsQuery = query(
-    collectionGroup(firestore, 'checkins'),
-    limit(200),
+function FeedItem({
+  createdBy,
+  feeling,
+  distance,
+  duration,
+  note,
+  id,
+  createdAt,
+  location,
+}: CheckIn) {
+  const action = getAction();
+
+  return useMemo(
+    () => (
+      <HStack space={2} alignItems="flex-start">
+        <Box mt={1}>
+          <ProfileAvatar {...createdBy} size="sm" />
+        </Box>
+        <VStack>
+          <HStack space={2} alignItems="baseline">
+            <Text fontWeight="bold">{createdBy?.displayName}</Text>
+
+            <Text fontSize="xs" color="coolGray.500">
+              {formatDistance(createdAt, new Date(), {addSuffix: true})}
+            </Text>
+          </HStack>
+          <Text>
+            {action} {distance}yds for {duration}min
+          </Text>
+          {location && (
+            <HStack space={0.5} alignItems="center">
+              <Icon
+                as={<IonIcon name="location-outline" />}
+                size="xs"
+                color="gray.600"
+              />
+              <Text fontSize="xs" color="gray.600">
+                {location}
+              </Text>
+            </HStack>
+          )}
+        </VStack>
+      </HStack>
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [id],
   );
-  onSnapshot(checkinsQuery, snapshot => {
-    setCheckins(snapshot.docs.map(doc => doc.data()));
-  });
-  return checkins;
+}
+
+function getAction() {
+  return actions[Math.floor(Math.random() * actions.length)];
 }

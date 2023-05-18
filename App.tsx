@@ -30,7 +30,7 @@ import {onAuthStateChanged} from 'firebase/auth';
 import type {User} from 'firebase/auth';
 import {SignInScreen} from './Screens/Auth/SignInScreen';
 import {SignUpScreen} from './Screens/Auth/SignUpScreen';
-import {AuthStackParamList, RootStackParamList} from './types';
+import {AuthStackParamList, RootStackParamList} from './types/routes';
 import {ProfileScreen} from './Screens/Profile';
 import {CheckInForm} from './Screens/Checkin';
 

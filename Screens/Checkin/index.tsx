@@ -10,18 +10,23 @@ import {
 import {collection, doc, addDoc} from 'firebase/firestore';
 import React, {useState} from 'react';
 import {getFirebase} from '../../firebase/init';
+import {checkInConverter} from '../../hooks/useCheckins';
 
 export function CheckInForm() {
   const [formData, setFormData] = useState({});
   const {firestore, auth} = getFirebase();
   const handleSubmit = () => {
-    if (!auth.currentUser?.email) {
+    if (!auth.currentUser?.uid) {
       return;
     }
-
-    const userDoc = doc(firestore, 'users', auth.currentUser.email);
-    addDoc(collection(userDoc, 'checkins'), formData);
+    console.log('checking in ', formData);
+    const userDoc = doc(firestore, 'users', auth.currentUser.uid);
+    addDoc(
+      collection(userDoc, 'checkins').withConverter(checkInConverter),
+      formData,
+    );
   };
+  console.log('lalal');
   return (
     <Box>
       <VStack space={3} mt="5" p={2}>
