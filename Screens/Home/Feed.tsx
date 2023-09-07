@@ -2,14 +2,13 @@ import {Box, HStack, Icon, ScrollView, Text, VStack} from 'native-base';
 import React, {useMemo} from 'react';
 import {ProfileAvatar} from '../../components/ProfileAvatar';
 import {CheckIn, useCheckins} from '../../hooks/useCheckins';
-import {formatDistance, formatRelative} from 'date-fns';
+import {formatDistance} from 'date-fns';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 
 const actions = ['Flied', 'Blasted', 'Crushed'];
 
 export function Feed() {
   const checkins = useCheckins();
-  console.log('lala', checkins);
   return (
     <ScrollView>
       {checkins.map(checkin => (

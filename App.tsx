@@ -108,8 +108,16 @@ function LoggedOutApp() {
         },
       }}>
       <Stack.Navigator>
-        <Stack.Screen name="SignIn" component={SignInScreen} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} />
+        <Stack.Screen
+          name="SignIn"
+          options={{title: 'Sign In'}}
+          component={SignInScreen}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUpScreen}
+          options={{title: 'Sign Up'}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

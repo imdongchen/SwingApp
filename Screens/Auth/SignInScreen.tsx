@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {signInWithEmailAndPassword} from 'firebase/auth';
+import {FirebaseError} from '@firebase/util';
 import {getFirebase} from '../../firebase/init';
 import {
   Box,
@@ -19,11 +20,12 @@ export function SignInScreen({navigation}: AuthStackScreenProps<'SignIn'>) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const {auth} = getFirebase();
+  const [error, setError] = useState<FirebaseError | null>(null);
 
   const handleSignIn = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(() => console.log('Signed in successfully'))
-      .catch(error => console.log('Error signing in', error));
+      .catch(err => setError(err));
   };
 
   return (
@@ -43,10 +45,10 @@ export function SignInScreen({navigation}: AuthStackScreenProps<'SignIn'>) {
           _dark={{
             color: 'warmGray.200',
           }}
-          color="coolGray.600"
+          color={error ? 'error.600' : 'coolGray.600'}
           fontWeight="medium"
           size="xs">
-          Sign in to continue!
+          {error ? getAuthErrorMsg(error.code) : 'Sign in to continue!'}
         </Heading>
 
         <VStack space={3} mt="5">
@@ -99,4 +101,14 @@ export function SignInScreen({navigation}: AuthStackScreenProps<'SignIn'>) {
       </Box>
     </Center>
   );
+}
+
+function getAuthErrorMsg(code: string) {
+  switch (code) {
+    case 'auth/user-not-found':
+    case 'auth/invalid-email':
+      return 'Invalid email or password';
+    default:
+      return 'Something went wrong';
+  }
 }
