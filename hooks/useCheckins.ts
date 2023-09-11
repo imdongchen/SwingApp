@@ -20,10 +20,6 @@ export type CheckIn = {
   duration?: string;
   location?: string;
   distance?: string;
-  isNotePrivate?: boolean;
-  private?: {
-    note?: string;
-  };
 };
 
 export const checkInConverter = {

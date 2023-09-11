@@ -1,37 +1,61 @@
 import {
   Box,
   Button,
-  Checkbox,
+  CheckIcon,
   FormControl,
+  HStack,
   Input,
+  Slide,
+  Text,
   TextArea,
   VStack,
 } from 'native-base';
 import {collection, doc, addDoc} from 'firebase/firestore';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {getFirebase} from '../../firebase/init';
-import {checkInConverter} from '../../hooks/useCheckins';
+import {CheckIn, checkInConverter} from '../../hooks/useCheckins';
+
+type CheckInFormData = Pick<
+  CheckIn,
+  'feeling' | 'distance' | 'duration' | 'note'
+>;
 
 export function CheckInForm() {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<CheckInFormData>({});
+  const [checkedIn, setCheckedIn] = useState(false);
   const {firestore, auth} = getFirebase();
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!auth.currentUser?.uid) {
       return;
     }
-    console.log('checking in ', formData);
     const userDoc = doc(firestore, 'users', auth.currentUser.uid);
-    addDoc(
+    await addDoc(
       collection(userDoc, 'checkins').withConverter(checkInConverter),
       formData,
     );
+    setCheckedIn(true);
+    setFormData({});
   };
+
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+    if (checkedIn) {
+      timeout = setTimeout(() => {
+        setCheckedIn(false);
+      }, 2000);
+    }
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [checkedIn]);
+
   return (
     <Box>
       <VStack space={3} mt="5" p={2}>
         <FormControl>
           <FormControl.Label>How you feel?</FormControl.Label>
           <Input
+            value={formData.feeling}
             variant="underlined"
             onChangeText={value => setFormData({...formData, feeling: value})}
           />
@@ -39,6 +63,7 @@ export function CheckInForm() {
         <FormControl>
           <FormControl.Label>Distance</FormControl.Label>
           <Input
+            value={formData.distance}
             variant="underlined"
             onChangeText={value => setFormData({...formData, distance: value})}
           />
@@ -46,6 +71,7 @@ export function CheckInForm() {
         <FormControl>
           <FormControl.Label>Duration</FormControl.Label>
           <Input
+            value={formData.duration}
             variant="underlined"
             onChangeText={value => setFormData({...formData, duration: value})}
           />
@@ -53,18 +79,11 @@ export function CheckInForm() {
         <FormControl>
           <FormControl.Label>Note</FormControl.Label>
           <TextArea
+            value={formData.note}
             h={20}
             autoCompleteType
             onChangeText={value => setFormData({...formData, note: value})}
           />
-          <Checkbox
-            value="private"
-            my={2}
-            onChange={value => {
-              setFormData({...formData, private: value});
-            }}>
-            Keep to self
-          </Checkbox>
         </FormControl>
         <FormControl>
           <FormControl.Label>Photo</FormControl.Label>
@@ -77,6 +96,46 @@ export function CheckInForm() {
           Check in
         </Button>
       </VStack>
+      <SuccessCheckinSlide isOpen={checkedIn} />
     </Box>
+  );
+}
+
+function SuccessCheckinSlide({isOpen}: {isOpen: boolean}) {
+  return (
+    <Slide in={isOpen} placement="top">
+      <Box
+        w="100%"
+        position="absolute"
+        p="2"
+        borderRadius="xs"
+        bg="emerald.100"
+        alignItems="center"
+        justifyContent="center"
+        _dark={{
+          bg: 'emerald.200',
+        }}
+        safeArea>
+        <HStack space={2}>
+          <CheckIcon
+            size="4"
+            color="emerald.600"
+            mt="1"
+            _dark={{
+              color: 'emerald.700',
+            }}
+          />
+          <Text
+            color="emerald.600"
+            textAlign="center"
+            _dark={{
+              color: 'emerald.700',
+            }}
+            fontWeight="medium">
+            Checked in successfully!
+          </Text>
+        </HStack>
+      </Box>
+    </Slide>
   );
 }
