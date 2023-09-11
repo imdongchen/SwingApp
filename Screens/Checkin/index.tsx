@@ -14,13 +14,14 @@ import {collection, doc, addDoc} from 'firebase/firestore';
 import React, {useEffect, useState} from 'react';
 import {getFirebase} from '../../firebase/init';
 import {CheckIn, checkInConverter} from '../../hooks/useCheckins';
+import {RootStackScreenProps} from '../../types/routes';
 
 type CheckInFormData = Pick<
   CheckIn,
   'feeling' | 'distance' | 'duration' | 'note'
 >;
 
-export function CheckInForm() {
+export function CheckInForm({navigation}: RootStackScreenProps<'Checkin'>) {
   const [formData, setFormData] = useState<CheckInFormData>({});
   const [checkedIn, setCheckedIn] = useState(false);
   const {firestore, auth} = getFirebase();
@@ -35,6 +36,7 @@ export function CheckInForm() {
     );
     setCheckedIn(true);
     setFormData({});
+    navigation.navigate('Home' as const);
   };
 
   useEffect(() => {

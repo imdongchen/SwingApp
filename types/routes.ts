@@ -15,7 +15,7 @@ export type AuthStackScreenProps<T extends keyof AuthStackParamList> =
 export type RootStackParamList = {
   Home: undefined;
   Calendar: undefined;
-  Checkin: undefined;
+  Checkin: NavigatorScreenParams<{}>;
   Profile: NavigatorScreenParams<FeedTabParamList>;
   Inbox: undefined;
   NotFound: undefined;
