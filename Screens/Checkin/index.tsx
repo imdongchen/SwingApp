@@ -26,7 +26,6 @@ export function CheckInForm() {
       formData,
     );
   };
-  console.log('lalal');
   return (
     <Box>
       <VStack space={3} mt="5" p={2}>

@@ -43,13 +43,15 @@ export const checkInConverter = {
       duration: checkIn.duration || '',
       location: checkIn.location || '',
       distance: checkIn.distance || '',
-      ...(checkIn.isNotePrivate
-        ? {private: {note: checkIn.note || ''}}
-        : {note: checkIn.note || ''}),
+      note: checkIn.note || '',
     };
   },
-  fromFirestore(snapshot: QueryDocumentSnapshot, options: SnapshotOptions) {
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions,
+  ): CheckIn {
     const data = snapshot.data(options);
+
     return {
       id: snapshot.id,
       createdAt: data.createdAt?.toDate(),
@@ -59,7 +61,7 @@ export const checkInConverter = {
       location: data.location,
       distance: data.distance,
       createdBy: data.createdBy,
-    } as CheckIn;
+    };
   },
 };
 
@@ -76,5 +78,6 @@ export function useCheckins() {
       setCheckins(snapshot.docs.map(doc => doc.data()));
     });
   }, []);
+  console.log('checkins', checkins);
   return checkins;
 }

@@ -43,7 +43,8 @@ function FeedItem({
             <Text fontWeight="bold">{createdBy?.displayName}</Text>
 
             <Text fontSize="xs" color="coolGray.500">
-              {formatDistance(createdAt, new Date(), {addSuffix: true})}
+              {createdAt &&
+                formatDistance(createdAt, new Date(), {addSuffix: true})}
             </Text>
           </HStack>
           <Text>
