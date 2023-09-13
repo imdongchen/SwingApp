@@ -179,6 +179,7 @@ function LoggedInApp(): JSX.Element {
           name="Profile"
           component={ProfileScreen}
           options={{
+            headerShown: false,
             title: 'Profile',
             tabBarIcon: ({focused}) => (
               <Icon
