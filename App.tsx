@@ -33,6 +33,7 @@ import {SignUpScreen} from './Screens/Auth/SignUpScreen';
 import {AuthStackParamList, RootStackParamList} from './types/routes';
 import {ProfileScreen} from './Screens/Profile';
 import {CheckInForm} from './Screens/Checkin';
+import {CalendarScreen} from './Screens/Calendar';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -133,6 +134,7 @@ function LoggedInApp(): JSX.Element {
           name="Home"
           component={HomeScreen}
           options={{
+            headerShown: false,
             title: 'Home',
             tabBarIcon: ({focused}) => (
               <Icon
@@ -149,13 +151,8 @@ function LoggedInApp(): JSX.Element {
         />
         <Tab.Screen
           name="Calendar"
-          component={Intro}
+          component={CalendarScreen}
           options={{title: 'Calendar'}}
-        />
-        <Tab.Screen
-          name="Checkin"
-          component={CheckInForm}
-          options={{title: 'Check in'}}
         />
         <Tab.Screen
           name="Inbox"
